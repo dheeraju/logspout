@@ -109,7 +109,7 @@ func (p *LogsPump) Run() error {
 		debug("pump: event:", normalID(event.ID), event.Status)
 		switch event.Status {
 		case "start", "restart":
-			go p.pumpLogs(event, true)
+			go p.pumpLogs(event, false)
 		case "die":
 			go p.update(event)
 		}
