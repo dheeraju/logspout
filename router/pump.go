@@ -111,7 +111,7 @@ func (p *LogsPump) Run() error {
 
 		// Print log message to be sent to Kafka. Logspout picks up STDOUT
 		// from all containers that have "LOGSPOUT=true" enabled at runtime.
-		logMessage := fmt.Sprintf("{\"timestamp\": \"%s\", \"type\": \"%s\", \"action\": \"%s\", \"from\": \"%s\", \"id\": \"%s\"",
+		logMessage := fmt.Sprintf("{\"timestamp\": \"%s\", \"type\": \"%s\", \"action\": \"%s\", \"from\": \"%s\", \"id\": \"%s\"}",
 					  time.Now().Format(time.RFC3339), event.Type, event.Action, event.From, event.Actor.ID)
 		fmt.Println(logMessage)
 
