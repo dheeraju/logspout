@@ -113,7 +113,7 @@ func (p *LogsPump) Run() error {
 		// from all containers that have "LOGSPOUT=true" enabled at runtime.
 		logMessage := fmt.Sprintf("{\"timestamp\": \"%s\", \"type\": \"%s\", \"action\": \"%s\", \"from\": \"%s\", \"id\": \"%s\"}",
 					  time.Now().Format(time.RFC3339), event.Type, event.Action, event.From, event.Actor.ID)
-		fmt.Println(logMessage)
+		log.Println(logMessage)
 
 		switch event.Status {
 		case "start", "restart":
