@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/fsouza/go-dockerclient"
+	"fmt"
 )
 
 func init() {
@@ -107,6 +108,13 @@ func (p *LogsPump) Run() error {
 	}
 	for event := range events {
 		debug("pump: event:", normalID(event.ID), event.Status)
+
+		// Print log message to be sent to Kafka. Logspout picks up STDOUT
+		// from all containers that have "LOGSPOUT=true" enabled at runtime.
+		logMessage := fmt.Sprintf("{\"timestamp\": \"%s\", \"type\": \"%s\", \"action\": \"%s\", \"from\": \"%s\", \"id\": \"%s\"}",
+					  time.Now().Format(time.RFC3339), event.Type, event.Action, event.From, event.Actor.ID)
+		log.Println(logMessage)
+
 		switch event.Status {
 		case "start", "restart":
 			go p.pumpLogs(event, false)
