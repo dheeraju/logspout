@@ -14,7 +14,7 @@ For now it only captures stdout and stderr, but a module to collect container sy
 
 ## Getting logspout
 
-Logspout is a very small Docker container (14MB virtual, based on [Alpine](https://github.com/gliderlabs/docker-alpine)). Pull the latest release from the index:
+Logspout is a very small Docker container (15.2MB virtual, based on [Alpine](https://github.com/gliderlabs/docker-alpine)). Pull the latest release from the index:
 
 	$ docker pull gliderlabs/logspout:latest
 
@@ -33,7 +33,7 @@ The simplest way to use logspout is to just take all logs and ship to a remote s
 		gliderlabs/logspout \
 		syslog://logs.papertrailapp.com:55555
 
-logspout will gather logs from other containers that are started **without the `-t` option**.
+logspout will gather logs from other containers that are started **without the `-t` option** and are configured with a logging driver that works with `docker logs` (`journald` and `json-file`).
 
 To see what data is used for syslog messages, see the [syslog adapter](http://github.com/gliderlabs/logspout/blob/master/adapters) docs.
 
@@ -41,7 +41,15 @@ To see what data is used for syslog messages, see the [syslog adapter](http://gi
 
 You can tell logspout to ignore specific containers by setting an environment variable when starting your container, like so:-
 
-        $ docker run -d -e 'LOGSPOUT=ignore' image
+    $ docker run -d -e 'LOGSPOUT=ignore' image
+
+Or, by adding a label which you define by setting an environment variable when running logspout:
+
+    $ docker run --name="logspout" \
+        -e EXCLUDE_LABEL=logspout.exclude \
+        --volume=/var/run/docker.sock:/var/run/docker.sock \
+        gliderlabs/logspout
+    $ docker run -d --label logspout.exclude=true image
 
 #### Inspect log streams using curl
 
@@ -87,9 +95,21 @@ The standard distribution of logspout comes with all modules defined in this rep
 
 ### Third-party modules
 
- * logspout-kafka...
+ * [logspout-kafka](https://github.com/gettyimages/logspout-kafka)
  * logspout-redis...
  * [logspout-logstash](https://github.com/looplab/logspout-logstash)
+ * [logspout-redis-logstash](https://github.com/rtoma/logspout-redis-logstash)
+
+### Loggly support
+
+Use logspout to stream your docker logs to Loggly via the [Loggly syslog endpoint](https://www.loggly.com/docs/streaming-syslog-without-using-files/).  
+```
+$ docker run --name logspout -d --volume=/var/run/docker.sock:/var/run/docker.sock \
+    -e SYSLOG_STRUCTURED_DATA="<Loggly API Key>@41058 tag=\"some tag name\"" \
+    gliderlabs/logspout \
+    syslog+tcp://logs-01.loggly.com:514
+```
+
 
 ## Contributing
 
