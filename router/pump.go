@@ -134,7 +134,7 @@ func (p *LogsPump) Run() error {
         // from all containers that have "LOGSPOUT=true" enabled at runtime.
         // We are sending fields only enclosed by quotes. Logstash will format
         // them as json, adding the appropiate fields.
-        log.Printf("\"%s\" \"%s\" \"%s\" \"%s\"\n",
+        log.Printf("'%s' '%s' '%s' '%s'\n",
                     event.Type, event.Action, event.From, event.Actor.ID)
 
         switch event.Status {
