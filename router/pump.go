@@ -73,7 +73,7 @@ func ignoreContainer(container *docker.Container) bool {
     if value, ok := container.Config.Labels[excludeLabel]; ok {
         return len(excludeLabel) > 0 && strings.ToLower(value) == "true"
     }
-    return false
+    return true
 }
 
 type update struct {
