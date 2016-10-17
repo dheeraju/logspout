@@ -139,7 +139,7 @@ func (p *LogsPump) Run() error {
 
         switch event.Status {
         case "start", "restart":
-            go p.pumpLogs(event, true)
+            go p.pumpLogs(event, false)
         case "rename":
             go p.rename(event)
         case "die":
